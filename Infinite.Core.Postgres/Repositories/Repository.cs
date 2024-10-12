@@ -3,58 +3,13 @@
     using AutoMapper;
     using Infinite.Core.Postgres.Context;
     using Infinite.Core.Postgres.Mapping;
-    using Microsoft.EntityFrameworkCore;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
-    public class Repository<T> : IRepository<T> where T : CoreEntity<long>
+    public class Repository<T> : ReadOnlyRepository<T>, IRepository<T> where T : CoreEntity<long>
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
-        private readonly IMapper _mapper;
-
         public Repository(ApplicationDbContext dbContext, IMapper mapper)
+            : base(dbContext, mapper)
         {
-            _dbContext = dbContext;
-            _dbSet = _dbContext.Set<T>();
-            _mapper = mapper;
-        }
-
-        public async Task<T> GetByIdAsync(long id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _dbSet.ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAsync(List<Expression<Func<T, bool>>> expressions)
-        {
-            IQueryable<T> query = _dbSet;
-
-            foreach (var expression in expressions)
-            {
-                query = query.Where(expression);
-            }
-
-            return await query.ToListAsync();
-        }
-
-        public async Task<IEnumerable<TDto>> GetAsync<TDto>(List<Expression<Func<T, bool>>> expressions) where TDto : class
-        {
-            IQueryable<T> query = _dbSet;
-
-            foreach (var expression in expressions)
-            {
-                query = query.Where(expression);
-            }
-
-            var entities = await query.ToListAsync();
-            return _mapper.Map<IEnumerable<TDto>>(entities);
         }
 
         public async Task AddAsync(T entity)
@@ -109,6 +64,7 @@
                 _dbContext.ChangeTracker.Clear();
             }
         }
+
         public async Task DeleteAsync(T entity)
         {
             entity.Excluido = true;

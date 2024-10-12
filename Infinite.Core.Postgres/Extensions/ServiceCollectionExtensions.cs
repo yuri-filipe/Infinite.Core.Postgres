@@ -10,7 +10,7 @@
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
-
+            services.AddScoped(typeof(IReadOnlyRepository<>), typeof(ReadOnlyRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             return services;
