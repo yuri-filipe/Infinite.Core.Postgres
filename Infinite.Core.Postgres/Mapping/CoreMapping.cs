@@ -86,7 +86,6 @@
 
         private string ConvertToColumnFormat(string propertyName)
         {
-            // Usa regex para adicionar o padrão TESTE_TESTE baseado no nome da propriedade
             var formattedName = Regex.Replace(propertyName, "([a-z])([A-Z])", "$1_$2").ToUpper();
             return formattedName;
         }
