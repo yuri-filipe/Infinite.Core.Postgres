@@ -3,7 +3,7 @@ name: Gerar Versão e Publicar Pacote NuGet
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-package:
