@@ -27,7 +27,11 @@ jobs:
       - name: Definir a versão do pacote
         id: vars
         run: |
-          VERSION="1.0.${{ github.run_number }}-preview"
+          if [ "${{ github.event.pull_request.base.ref }}" == "master" ]; then
+            VERSION="1.0.${{ github.run_number }}"
+          else
+            VERSION="1.0.${{ github.run_number }}-preview"
+          fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Compilar
@@ -41,6 +45,12 @@ jobs:
         with:
           name: pacote-nuget
           path: ./nupkg/*.nupkg
+
+      - name: Upload dos símbolos como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: pacote-simbolos
+          path: ./nupkg/*.snupkg
 
       # - name: Publicar o pacote e símbolos no Sonatype Nexus
       #   if: github.event.pull_request.merged == true
