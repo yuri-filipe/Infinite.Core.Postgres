@@ -1,0 +1,45 @@
+name: Gerar Versão e Publicar Pacote NuGet
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar dependências
+        run: dotnet restore
+
+      # - name: Executar testes
+      #   run: dotnet test --no-restore --verbosity normal
+
+      - name: Definir a versão do pacote
+        id: vars
+        run: |
+          VERSION="1.0.${{ github.run_number }}-preview"
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Compilar
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Empacotar
+        run: dotnet pack --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ env.PACKAGE_VERSION }} /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg
+
+      # - name: Publicar o pacote e símbolos no Sonatype Nexus
+      #   if: github.event.pull_request.merged == true
+      #   run: |
+      #     dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NEXUS_API_KEY }} --source "https://your-nexus-repository-url/repository/your-nuget-repo/"
+      #     dotnet nuget push ./nupkg/*.snupkg --api-key ${{ secrets.NEXUS_API_KEY }} --source "https://your-nexus-repository-url/repository/your-nuget-symbols-repo/"
+      #   env:
+      #     NEXUS_API_KEY: ${{ secrets.NEXUS_API_KEY }}
