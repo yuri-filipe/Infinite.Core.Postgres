@@ -5,7 +5,7 @@
     using Infinite.Core.Postgres.Mapping;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    public class Repository<T> : ReadOnlyRepository<T>, IRepository<T> where T : CoreEntity<long>
+    public class Repository<T> : ReadOnlyRepository<T>, IRepository<T> where T : CoreEntity
     {
         public Repository(ApplicationDbContext dbContext, IMapper mapper)
             : base(dbContext, mapper)

@@ -1,7 +1,7 @@
 ﻿namespace Infinite.Core.Postgres.Repositories
 {
     using Infinite.Core.Postgres.Mapping;
-    public interface IRepository<T> : IReadOnlyRepository<T> where T : CoreEntity<long>
+    public interface IRepository<T> : IReadOnlyRepository<T> where T : CoreEntity
     {
         Task AddAsync(T entity);
         Task AddAsync(IEnumerable<T> entities, int batchSize = 100);

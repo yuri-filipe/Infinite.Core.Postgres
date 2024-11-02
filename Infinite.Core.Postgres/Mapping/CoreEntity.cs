@@ -1,8 +1,8 @@
 ﻿namespace Infinite.Core.Postgres.Mapping
 {
-    public abstract class CoreEntity<TKey>
+    public abstract class CoreEntity
     {
-        public TKey Id { get; set; }
+        public abstract long Id { get; set; }
         public bool Excluido { get; set; }
         public string UsuarioInclusao { get; set; }
         public DateTime DataInclusao { get; set; }
